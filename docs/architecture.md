@@ -1,4 +1,10 @@
-# Architecture
+> **Superseded by [`design-v0.1.md`](./design-v0.1.md).**
+>
+> This was the initial v0 sketch written before the office-hours + eng-review
+> cycle. It's preserved for historical context. For current architecture,
+> scope, premises, and the authoritative spec, read `design-v0.1.md`.
+
+# Architecture (v0 sketch — historical)
 
 ## MVP
 

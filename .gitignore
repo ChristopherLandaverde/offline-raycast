@@ -1,9 +1,37 @@
+# OS
 .DS_Store
+
+# Editors
+*.swp
+.vscode/
+.idea/
+
+# Node (legacy, not used in v0.1 but harmless)
 node_modules/
 dist/
 build/
+
+# Env & secrets
 .env
 .env.*
-coverage/
+
+# Logs & tmp
 tmp/
 *.log
+coverage/
+htmlcov/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# Local user config (if someone copies their actions.toml into the repo by accident)
+config.local.toml

@@ -1,51 +1,81 @@
 # Offline Text Tools
 
-Offline-first shortcuts for:
+Local-first grammar fixes and EN↔PT translation, triggered by a global hotkey,
+with a mandatory diff review before any text is applied.
 
-- grammar fixes
-- English to Portuguese translation
-- Portuguese to English translation
+- **Local by default** via Ollama — zero network, zero API keys needed
+- **Hosted optional** via any LiteLLM-supported provider (OpenAI, Anthropic,
+  Groq, etc.) when quality matters more than locality
+- **Every edit gets a diff review** — no auto-apply, ever
+- **macOS + Linux**, same Python core, different popup frontends
 
-## Goal
+## Status
 
-Build the smallest reliable desktop tool that can:
+**Design locked (v0.1), implementation pending.**
 
-1. read selected text or clipboard text
-2. run a constrained local text action
-3. show a safe diff before applying output
-4. paste or copy the result back
+- Full spec → [`docs/design-v0.1.md`](docs/design-v0.1.md)
+- Deferred work → [`TODOS.md`](TODOS.md)
+- Eval criteria → [`docs/evaluation.md`](docs/evaluation.md)
 
-## Principles
+## Commands (v0.1)
 
-- local-first, no hosted dependency in the main path
-- conservative edits over aggressive rewrites
-- separate commands for grammar and translation
-- never auto-apply risky output
+- `fix-grammar` — conservative, meaning-preserving edits
+- `translate-en-to-pt` — English → Portuguese
+- `translate-pt-to-en` — Portuguese → English
 
-## Initial Scope
+Adding a fourth command in v0.1 is: drop a prompt file in `prompts/`, add an
+entry to `actions.toml`. No Python changes.
 
-- macOS and Linux
-- one hotkey entry point
-- three commands:
-  - `fix-grammar`
-  - `translate-en-to-pt`
-  - `translate-pt-to-en`
-- local model runtime via `Ollama` or `llama.cpp`
-- diff-based review before replace
+## How it works (summary)
 
-## Proposed Layout
+```
+Global hotkey
+     │
+     ▼
+┌─────────────────────┐     ┌─────────────────────┐
+│ Linux: rofi popup   │     │ macOS: choose popup │
+│ + xclip / wl-copy   │     │ + pbpaste / pbcopy  │
+└──────────┬──────────┘     └──────────┬──────────┘
+           └────────────┬───────────────┘
+                        ▼
+            ┌────────────────────────┐
+            │ python -m offline_text │
+            │   (LiteLLM + safety +  │
+            │    diff + actions)     │
+            └──────────┬─────────────┘
+                       ▼
+              ┌─────────────────┐
+              │ Local: Ollama   │
+              │ Hosted: OpenAI, │
+              │   Anthropic, … │
+              └─────────────────┘
+```
 
-- `docs/architecture.md` - system design and flow
-- `docs/evaluation.md` - how to test output quality
-- `prompts/` - strict prompts for grammar and translation
-- `src/` - app code
+Full architecture diagram + repository layout in [`docs/design-v0.1.md`](docs/design-v0.1.md).
 
-## Next Build Steps
+## Install (planned, per OS)
 
-1. choose runtime: `Tauri` or a smaller script-first prototype
-2. choose local model host: `Ollama` or `llama.cpp`
-3. implement prompt runner
-4. add diff guardrails
-5. add clipboard and shortcut integration
+**Linux:**
+```
+git clone … && cd offline-text-tools && make install
+# installs to ~/.local/bin, sets up rofi popup, prints keybind snippet
+```
 
-# offline-raycast
+**macOS:**
+```
+git clone … && cd offline-text-tools && make install
+# runs brew install choose-gui ollama, installs the Python package,
+# prints a Raycast Script Command snippet for the hotkey
+```
+
+Both paths assume Ollama is installed locally if you want the default local
+provider. Hosted providers need an API key stored via the OS keychain:
+```
+offline-text config set-key anthropic
+```
+
+Full install + per-machine config guide is in the design doc.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
